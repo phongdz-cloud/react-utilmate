@@ -15,6 +15,11 @@ const App = () => {
     setTodos([...todoList, newTodo]);
   };
 
+  const deleteTodo = (id) => {
+    const newTodoList = todoList.filter((item) => item.id !== id);
+    setTodos(newTodoList);
+  };
+
   const generateId = () => {
     return Math.floor(Math.random() * 1000);
   };
@@ -29,7 +34,7 @@ const App = () => {
           <img src={reactLogo} />
         </div>
       ) : (
-        <TodoData todoList={todoList} />
+        <TodoData todoList={todoList} deleteTodo={deleteTodo} />
       )}
     </div>
   );
