@@ -24,7 +24,11 @@ const App = () => {
   };
 
   const addNewTodo = (name) => {
-    alert(`call me ${name}`);
+    const newTodo = {
+      id: todoList.length + 1,
+      name,
+    };
+    setTodos([...todoList, newTodo]);
   };
 
   return (
