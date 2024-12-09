@@ -1,13 +1,29 @@
 import { Button, Drawer } from "antd";
+import { useState } from "react";
 
 const ViewUserDetail = (props) => {
   const { isViewDrawerOpen, setIsViewDrawerOpen, dataDetail, setDataDetail } =
     props;
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
   const onClose = () => {
     console.log("check props ", isViewDrawerOpen);
     setIsViewDrawerOpen(false);
     setDataDetail(null);
+  };
+
+  const handleOnChangeFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(null);
+      setPreview(null);
+      return;
+    }
+
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   return (
@@ -27,10 +43,16 @@ const ViewUserDetail = (props) => {
         <p>PhoneNumber: {dataDetail?.phone}</p>
         <br />
         <p>Avatar: </p>
-        <div>
+        <div
+          style={{
+            marginTop: "10px",
+            height: "100px",
+            width: "150px",
+            border: "1px solid #ccc",
+          }}
+        >
           <img
-            height={100}
-            width={150}
+            style={{ height: "100%", width: "100%", objectFit: "contain" }}
             src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${
               dataDetail?.avatar
             }`}
@@ -52,9 +74,29 @@ const ViewUserDetail = (props) => {
           >
             Upload avatar
           </label>
-          <input type="file" hidden id="btnUpload" />
+          <input
+            type="file"
+            hidden
+            id="btnUpload"
+            onChange={handleOnChangeFile}
+          />
         </div>
-        {/* <Button type="primary">Upload avatar</Button> */}
+        {preview && (
+          <div
+            style={{
+              marginTop: "10px",
+              height: "100px",
+              width: "150px",
+              border: "1px solid #ccc",
+            }}
+          >
+            <img
+              style={{ height: "100%", width: "100%", objectFit: "contain" }}
+              src={preview}
+              alt=""
+            />
+          </div>
+        )}
       </Drawer>
     </>
   );
