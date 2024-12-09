@@ -1,5 +1,4 @@
 import { Drawer } from "antd";
-import { useState } from "react";
 
 const ViewUserDetail = (props) => {
   const { isViewDrawerOpen, setIsViewDrawerOpen, dataDetail, setDataDetail } =

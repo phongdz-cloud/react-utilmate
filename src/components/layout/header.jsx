@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import {
-  AppstoreOutlined,
   AuditOutlined,
   HomeOutlined,
-  MailOutlined,
-  SettingOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
