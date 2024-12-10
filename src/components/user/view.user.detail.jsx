@@ -1,9 +1,18 @@
-import { Button, Drawer } from "antd";
+import { Button, Drawer, notification } from "antd";
 import { useState } from "react";
+import {
+  handleUploadFile,
+  updateUserAvatarAPI,
+} from "../../services/api.service";
 
 const ViewUserDetail = (props) => {
-  const { isViewDrawerOpen, setIsViewDrawerOpen, dataDetail, setDataDetail } =
-    props;
+  const {
+    isViewDrawerOpen,
+    setIsViewDrawerOpen,
+    dataDetail,
+    setDataDetail,
+    loadUser,
+  } = props;
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -24,6 +33,41 @@ const ViewUserDetail = (props) => {
     const file = e.target.files[0];
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
+  };
+
+  const handleUpdateUserAvatar = async () => {
+    // step 1: update file
+    const resUpload = await handleUploadFile(selectedFile, "avatar");
+    if (resUpload.data) {
+      const newAvatar = resUpload.data.fileUploaded;
+      // step 2: update user
+      const resUpdateAvatar = await updateUserAvatarAPI(
+        dataDetail._id,
+        dataDetail.fullName,
+        dataDetail.phone,
+        newAvatar
+      );
+      if (resUpdateAvatar.data) {
+        notification.success({
+          message: "Update user success",
+          description: "Cập nhật avatar thành công",
+        });
+        setIsViewDrawerOpen(false);
+        setSelectedFile(null);
+        setPreview(null);
+        await loadUser();
+      } else {
+        notification.error({
+          message: "Error update avatar",
+          description: JSON.stringify(resUpdateAvatar.message),
+        });
+      }
+    } else {
+      notification.error({
+        message: "Error upload file",
+        description: JSON.stringify(resUpload.message),
+      });
+    }
   };
 
   return (
@@ -87,6 +131,7 @@ const ViewUserDetail = (props) => {
               marginTop: "10px",
               height: "100px",
               width: "150px",
+              marginBottom: "15px",
               border: "1px solid #ccc",
             }}
           >
@@ -95,6 +140,9 @@ const ViewUserDetail = (props) => {
               src={preview}
               alt=""
             />
+            <Button type="primary" onClick={() => handleUpdateUserAvatar()}>
+              Save
+            </Button>
           </div>
         )}
       </Drawer>

@@ -106,6 +106,7 @@ const UserTable = (props) => {
         setIsViewDrawerOpen={setIsViewDrawerOpen}
         dataDetail={dataDetail}
         setDataDetail={setDataDetail}
+        loadUser={loadUser}
       />
     </>
   );
