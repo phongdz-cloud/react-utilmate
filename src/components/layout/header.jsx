@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import {
+  AliwangwangOutlined,
   AuditOutlined,
   HomeOutlined,
-  SettingOutlined,
+  LoginOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
@@ -10,6 +11,10 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../context/auth.context";
 
 const Header = () => {
+  const [current, setCurrent] = useState("");
+
+  const { user } = useContext(AuthContext);
+
   const items = [
     {
       label: <Link to={"/"}>Home</Link>,
@@ -26,22 +31,26 @@ const Header = () => {
       key: "books",
       icon: <AuditOutlined />,
     },
-    {
-      key: "setting",
-      label: "Cài đặt",
-      icon: <SettingOutlined />,
-      children: [
-        { key: "login", label: <Link to={"/login"}>Đăng nhập</Link> },
-        { key: "register", label: <Link to={"#"}>Đăng xuất</Link> },
-      ],
-    },
+    ...(!user.id
+      ? [
+          {
+            label: <Link to={"/login"}>Đăng nhập</Link>,
+            key: "login",
+            icon: <LoginOutlined />,
+          },
+        ]
+      : []),
+    ...(user.id
+      ? [
+          {
+            key: "setting",
+            label: `Welcome ${user.fullName}`,
+            icon: <AliwangwangOutlined />,
+            children: [{ key: "logout", label: "Đăng xuất" }],
+          },
+        ]
+      : []),
   ];
-
-  const [current, setCurrent] = useState("");
-
-  const { user } = useContext(AuthContext);
-
-  console.log("check data : ", user);
 
   const onClick = (e) => {
     console.log("click ", e);
