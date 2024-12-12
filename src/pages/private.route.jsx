@@ -10,7 +10,6 @@ const PrivateRoute = (props) => {
   if (user && user.id) {
     return <>{props.children}</>;
   }
-  //   return <Navigate to="/login" />;
 
   return (
     <Result
