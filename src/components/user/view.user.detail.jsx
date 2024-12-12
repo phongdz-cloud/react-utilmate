@@ -18,7 +18,6 @@ const ViewUserDetail = (props) => {
   const [preview, setPreview] = useState(null);
 
   const onClose = () => {
-    console.log("check props ", isViewDrawerOpen);
     setIsViewDrawerOpen(false);
     setDataDetail(null);
   };

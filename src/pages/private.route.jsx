@@ -5,7 +5,6 @@ import { Button, Result } from "antd";
 
 const PrivateRoute = (props) => {
   const { user } = useContext(AuthContext);
-  console.log("private route", user);
 
   if (user && user.id) {
     return <>{props.children}</>;
