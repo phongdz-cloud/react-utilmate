@@ -78,7 +78,13 @@ const LoginPage = () => {
                 },
               ]}
             >
-              <Input.Password />
+              <Input.Password
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    form.submit();
+                  }
+                }}
+              />
             </Form.Item>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
