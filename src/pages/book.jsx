@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BookTable from "../components/book/BookTable";
 import { fetchAllBookAPI } from "../services/api.service";
 import BookForm from "../components/book/BookForm";
+import BookFormAdvance from "../components/book/BookFormAdvance";
 
 const BookPage = () => {
   const [dataBooks, setDataBooks] = useState([]);
@@ -26,7 +27,8 @@ const BookPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <BookForm loadBook={loadBook} />
+      {/* <BookForm loadBook={loadBook} /> */}
+      <BookFormAdvance loadBook={loadBook} />
       <BookTable
         dataBooks={dataBooks}
         current={current}
