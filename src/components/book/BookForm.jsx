@@ -1,8 +1,11 @@
-import { Button, Input, InputNumber, Modal, Select } from "antd";
+import { Button, Input, InputNumber, Modal, notification, Select } from "antd";
 import { useState } from "react";
+import { createBookApi, handleUploadFile } from "../../services/api.service";
 
 const BookForm = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const [dataBook, setDataBook] = useState({
     mainText: "",
@@ -12,12 +15,49 @@ const BookForm = (props) => {
     category: "Arts",
   });
 
-  const handleSubmitBtn = () => {
-    console.log(dataBook);
+  const { loadBook } = props;
+
+  const handleSubmitBtn = async () => {
+    if (!selectedFile) {
+      notification.error({
+        message: "Error create book",
+        description: "Vui lòng upload ảnh thumbnail",
+      });
+      return;
+    }
+
+    const resUpload = await handleUploadFile(selectedFile, "book");
+
+    if (resUpload.data) {
+      const thumbnail = resUpload.data.fileUploaded;
+
+      const resCreateBook = await createBookApi({ ...dataBook, thumbnail });
+
+      if (resCreateBook.data) {
+        notification.success({
+          message: "Create book success",
+          description: "Tạo mới sách thành công",
+        });
+        resetAndCloseModal();
+        await loadBook();
+      } else {
+        notification.error({
+          message: "Error create book",
+          description: JSON.stringify(resCreateBook.message),
+        });
+      }
+    } else {
+      notification.error({
+        message: "Error create book",
+        description: JSON.stringify(resUpload.message),
+      });
+    }
   };
 
   const resetAndCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedFile(null);
+    setPreview(null);
     setDataBook({
       mainText: "",
       author: "",
@@ -25,6 +65,18 @@ const BookForm = (props) => {
       quantity: null,
       category: "Arts",
     });
+  };
+
+  const handleOnChangeFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(null);
+      setPreview(null);
+      return;
+    }
+
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   return (
@@ -111,6 +163,48 @@ const BookForm = (props) => {
               ]}
             />
           </div>
+          <div>
+            <label
+              htmlFor="btnUpload"
+              style={{
+                display: "block",
+                width: "fit-content",
+                marginTop: "15px",
+                padding: "5px 10px",
+                background: "orange",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Upload
+            </label>
+            <input
+              type="file"
+              hidden
+              id="btnUpload"
+              onChange={handleOnChangeFile}
+              onClick={(event) => {
+                event.target.value = null;
+              }}
+            />
+          </div>
+          {preview && (
+            <div
+              style={{
+                marginTop: "10px",
+                height: "100px",
+                width: "150px",
+                marginBottom: "15px",
+                border: "1px solid #ccc",
+              }}
+            >
+              <img
+                style={{ height: "100%", width: "100%", objectFit: "contain" }}
+                src={preview}
+                alt=""
+              />
+            </div>
+          )}
         </div>
       </Modal>
     </>

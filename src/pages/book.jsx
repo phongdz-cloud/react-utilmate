@@ -26,7 +26,7 @@ const BookPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <BookForm />
+      <BookForm loadBook={loadBook} />
       <BookTable
         dataBooks={dataBooks}
         current={current}
