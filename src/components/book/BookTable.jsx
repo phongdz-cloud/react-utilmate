@@ -4,8 +4,16 @@ import BookView from "./BookView";
 import { useState } from "react";
 
 const BookTable = (props) => {
-  const { dataBooks, current, pageSize, total, setCurrent, setPageSize } =
-    props;
+  const {
+    dataBooks,
+    setDataBookForm,
+    current,
+    pageSize,
+    total,
+    setCurrent,
+    setPageSize,
+    setIsModalOpen,
+  } = props;
 
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
 
@@ -70,8 +78,9 @@ const BookTable = (props) => {
             <EditOutlined
               style={{ cursor: "pointer", color: "orange" }}
               onClick={() => {
-                // setDataUpdate(record);
-                // setIsModalUpdateOpen(true);
+                console.log("record", record);
+                setDataBookForm(record);
+                setIsModalOpen(true);
               }}
             />
             <Popconfirm

@@ -5,7 +5,9 @@ import BookForm from "../components/book/BookForm";
 import BookFormAdvance from "../components/book/BookFormAdvance";
 
 const BookPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataBooks, setDataBooks] = useState([]);
+  const [dataBookForm, setDataBookForm] = useState(null);
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
@@ -27,15 +29,23 @@ const BookPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      {/* <BookForm loadBook={loadBook} /> */}
-      <BookFormAdvance loadBook={loadBook} />
+      <BookForm
+        loadBook={loadBook}
+        dataBookForm={dataBookForm}
+        setDataBookForm={setDataBookForm}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
+      {/* <BookFormAdvance loadBook={loadBook} /> */}
       <BookTable
         dataBooks={dataBooks}
+        setDataBookForm={setDataBookForm}
         current={current}
         pageSize={pageSize}
         total={total}
         setCurrent={setCurrent}
         setPageSize={setPageSize}
+        setIsModalOpen={setIsModalOpen}
       />
     </div>
   );

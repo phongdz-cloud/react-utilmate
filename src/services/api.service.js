@@ -96,6 +96,11 @@ const createBookApi = (dataBook) => {
   return axios.post(URL_BACKEND, dataBook);
 };
 
+const updateBookApi = (dataBook) => {
+  const URL_BACKEND = "/api/v1/book";
+  return axios.put(URL_BACKEND, dataBook);
+};
+
 export {
   createUserAPI,
   updateUserAPI,
@@ -109,4 +114,5 @@ export {
   logoutAPI,
   fetchAllBookAPI,
   createBookApi,
+  updateBookApi,
 };
