@@ -52,6 +52,7 @@ const BookPage = () => {
         setCurrent={setCurrent}
         setPageSize={setPageSize}
         setIsModalOpen={setIsModalOpen}
+        loadBook={loadBook}
       />
     </div>
   );
