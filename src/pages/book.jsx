@@ -29,14 +29,20 @@ const BookPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <BookForm
+      {/* <BookForm
+        loadBook={loadBook}
+        dataBookForm={dataBookForm}
+        setDataBookForm={setDataBookForm}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      /> */}
+      <BookFormAdvance
         loadBook={loadBook}
         dataBookForm={dataBookForm}
         setDataBookForm={setDataBookForm}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
-      {/* <BookFormAdvance loadBook={loadBook} /> */}
       <BookTable
         dataBooks={dataBooks}
         setDataBookForm={setDataBookForm}

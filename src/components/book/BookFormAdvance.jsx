@@ -7,50 +7,98 @@ import {
   notification,
   Select,
 } from "antd";
-import { useState } from "react";
-import { createBookApi, handleUploadFile } from "../../services/api.service";
+import { useEffect, useState } from "react";
+import {
+  createBookApi,
+  handleUploadFile,
+  updateBookApi,
+} from "../../services/api.service";
 
 const BookFormAdvance = (props) => {
   const [form] = Form.useForm();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
-  const { loadBook } = props;
+  const {
+    loadBook,
+    dataBookForm,
+    isModalOpen,
+    setIsModalOpen,
+    setDataBookForm,
+  } = props;
+
+  useEffect(() => {
+    if (dataBookForm) {
+      console.log("dataBookForm", dataBookForm);
+      form.setFieldsValue({ ...dataBookForm });
+      setPreview(
+        `${import.meta.env.VITE_BACKEND_URL}/images/book/${
+          dataBookForm?.thumbnail
+        }`
+      );
+    }
+  }, [dataBookForm]);
 
   const onFinish = async (values) => {
-    if (!selectedFile) {
-      notification.error({
-        message: "Error create book",
-        description: "Vui lòng upload ảnh thumbnail",
+    if (!dataBookForm?._id) {
+      if (!selectedFile) {
+        notification.error({
+          message: "Error create book",
+          description: "Vui lòng upload ảnh thumbnail",
+        });
+        return;
+      }
+
+      const resUpload = await handleUploadFile(selectedFile, "book");
+
+      if (resUpload.data) {
+        const thumbnail = resUpload.data.fileUploaded;
+
+        const resCreateBook = await createBookApi({ ...values, thumbnail });
+
+        if (resCreateBook.data) {
+          notification.success({
+            message: "Create book success",
+            description: "Tạo mới sách thành công",
+          });
+          resetAndCloseModal();
+          await loadBook();
+        } else {
+          notification.error({
+            message: "Error create book",
+            description: JSON.stringify(resCreateBook.message),
+          });
+        }
+      } else {
+        notification.error({
+          message: "Error create book",
+          description: JSON.stringify(resUpload.message),
+        });
+      }
+    } else {
+      let thumbnail = values.thumbnail;
+      if (selectedFile) {
+        const resUpload = await handleUploadFile(selectedFile, "book");
+        thumbnail = resUpload.data.fileUploaded;
+      }
+
+      const resUpdateBook = await updateBookApi(dataBookForm._id, {
+        ...values,
+        thumbnail,
       });
-      return;
-    }
 
-    const resUpload = await handleUploadFile(selectedFile, "book");
-
-    if (resUpload.data) {
-      const thumbnail = resUpload.data.fileUploaded;
-
-      const resCreateBook = await createBookApi({ ...values, thumbnail });
-
-      if (resCreateBook.data) {
+      if (resUpdateBook.data) {
         notification.success({
-          message: "Create book success",
-          description: "Tạo mới sách thành công",
+          message: "Update book success",
+          description: "Cập nhật sách thành công",
         });
         resetAndCloseModal();
         await loadBook();
       } else {
         notification.error({
-          message: "Error create book",
-          description: JSON.stringify(resCreateBook.message),
+          message: "Error update book",
+          description: JSON.stringify(resUpdateBook.message),
         });
       }
-    } else {
-      notification.error({
-        message: "Error create book",
-        description: JSON.stringify(resUpload.message),
-      });
     }
   };
 
@@ -59,6 +107,7 @@ const BookFormAdvance = (props) => {
     setSelectedFile(null);
     setPreview(null);
     form.resetFields();
+    setDataBookForm(null);
   };
 
   const handleOnChangeFile = (e) => {
@@ -93,10 +142,16 @@ const BookFormAdvance = (props) => {
         onOk={() => form.submit()}
         onCancel={() => resetAndCloseModal()}
         maskClosable={false}
-        okText="CREATE"
+        okText={dataBookForm && dataBookForm._id ? "Update" : "Create"}
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <div style={{ display: "flex", flexDirection: "column" }}>
+            {dataBookForm && dataBookForm._id && (
+              <Form.Item label="Id" name="_id">
+                <Input disabled />
+              </Form.Item>
+            )}
+
             <Form.Item
               label="Tiêu đề"
               name="mainText"
