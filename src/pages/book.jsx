@@ -23,8 +23,6 @@ const BookPage = () => {
     if (res.data) {
       const meta = res.data.meta;
       setDataBooks(res.data.result);
-      setCurrent(meta.current);
-      setPageSize(meta.pageSize);
       setTotal(meta.total);
     }
     setLoadingTable(false);

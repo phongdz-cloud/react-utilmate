@@ -19,8 +19,8 @@ const UserPage = () => {
     if (res.data) {
       const meta = res.data.meta;
       setDataUsers(res.data.result);
-      setCurrent(meta.current);
-      setPageSize(meta.pageSize);
+      // setCurrent(meta.current);
+      // setPageSize(meta.pageSize);
       setTotal(meta.total);
     }
   };
