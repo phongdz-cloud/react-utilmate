@@ -96,9 +96,9 @@ const createBookApi = (dataBook) => {
   return axios.post(URL_BACKEND, dataBook);
 };
 
-const updateBookApi = (dataBook) => {
+const updateBookApi = (id, dataBook) => {
   const URL_BACKEND = "/api/v1/book";
-  return axios.put(URL_BACKEND, dataBook);
+  return axios.put(URL_BACKEND, { id, ...dataBook });
 };
 
 export {

@@ -1,6 +1,10 @@
 import { Button, Input, InputNumber, Modal, notification, Select } from "antd";
 import { useEffect, useState } from "react";
-import { createBookApi, handleUploadFile } from "../../services/api.service";
+import {
+  createBookApi,
+  handleUploadFile,
+  updateBookApi,
+} from "../../services/api.service";
 
 const BookForm = (props) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -68,9 +72,29 @@ const BookForm = (props) => {
         });
       }
     } else {
-      let resUpload = undefined;
-      if (!selectedFile) {
-        resUpload = await handleUploadFile(selectedFile, "book");
+      let thumbnail = dataBook.thumbnail;
+      if (selectedFile) {
+        const resUpload = await handleUploadFile(selectedFile, "book");
+        thumbnail = resUpload.data.fileUploaded;
+      }
+
+      const resUpdateBook = await updateBookApi(dataBookForm._id, {
+        ...dataBook,
+        thumbnail,
+      });
+
+      if (resUpdateBook.data) {
+        notification.success({
+          message: "Update book success",
+          description: "Cập nhật sách thành công",
+        });
+        resetAndCloseModal();
+        await loadBook();
+      } else {
+        notification.error({
+          message: "Error update book",
+          description: JSON.stringify(resUpdateBook.message),
+        });
       }
     }
   };
@@ -100,8 +124,6 @@ const BookForm = (props) => {
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
   };
-
-  console.log("dataBookForm: ", dataBookForm);
 
   return (
     <>
