@@ -15,6 +15,7 @@ const BookTable = (props) => {
     setPageSize,
     setIsModalOpen,
     loadBook,
+    loadingTable,
   } = props;
 
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
@@ -157,6 +158,7 @@ const BookTable = (props) => {
           },
         }}
         onChange={onChange}
+        loading={loadingTable}
       />
 
       <BookView

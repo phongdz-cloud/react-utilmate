@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AliwangwangOutlined,
   AuditOutlined,
@@ -7,7 +7,7 @@ import {
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { Menu, message } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/auth.context";
 import { logoutAPI } from "../../services/api.service";
 
@@ -16,7 +16,23 @@ const Header = () => {
 
   const { user, setUser } = useContext(AuthContext);
 
+  const location = useLocation();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location && location.pathname) {
+      const allRoutes = ["users", "books"];
+      const currentLocation = allRoutes.find((route) =>
+        location.pathname.includes(route)
+      );
+      if (currentLocation) {
+        setCurrent(currentLocation);
+      } else {
+        setCurrent("home");
+      }
+    }
+  }, [location]);
 
   const handleLogOut = async () => {
     const res = await logoutAPI();
@@ -44,7 +60,7 @@ const Header = () => {
     },
     {
       label: <Link to={"/users"}>Users</Link>,
-      key: "user",
+      key: "users",
       icon: <UsergroupAddOutlined />,
     },
     {
